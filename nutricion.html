@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Principales nutrientes</title>
+
+    <script>
+        /** CÓMO JUGAR 
+         * 
+         * Descargar el archivo .html y abrir con Chrome, Firefox o cualquier otro navegador.
+         * 
+         * El jugador introduce su nombre y el máximo de rondas de juego. Este máximo existe para limitar el tiempo de juego de cada alumno.
+         * 
+         * El juego consiste en seleccionar los principales nutrientes del alimento indicado por orden de abundancia. Si se ha equivocado puede borrar la selección. Los alimentos se eligen aleatoriamente.
+         * 
+         * El juego termina cuando el jugador comete un error o alcanza el límite de puntuación. La puntuación obtenida se guarda en la lista de puntuación. Esta lista se guarda, como una cookie, en el ordenador que se utilice para jugar y no se comparte a terceros.
+         * 
+         * La lista de alimentos es editable, se pueden añadir y modificar alimentos. Para editar es necesario abrir con bloc de notas. Las instrucciones para editar la lista de alimentos están a continuación.
+         * 
+         * Para notificar errores o sugerir mejoras u otros juegos me podéis contactar por Instagram @ob.joan 
+         * 
+        */
+
+        /** EDITAR LISTA DE ALIMENTOS. 
+         *
+         * Click derecho, abrir con bloc de notas (no sirve Word o similares) y bajar hasta encontrar el dataset.
+         *
+         * Para añadir nuevos alimentos al dataset escribir una coma al final del elemento anterior y en una nueva línea copiar {name: "", list: [], info: ""}. 
+         * 
+         * Rellenar los datos separando los valores numéricos de la lista de nutrientes nutrientes con comas. Los nutrientes deben estar ordenados por abundancia. Si hay varias combinaciones posibles se anidan como en el siguiente ejemplo [[1, 2], [2, 1]].
+         * 
+         * El último elemento de la lista no debe llevar coma al final. 
+        */
+
+        // {name: "", list: [], info: ""}
+        /**
+         * 0 -> Proteína
+         * 1 -> G. Complejos
+         * 2 -> G. Simples
+         * 3 -> Lípidos
+         * 4 -> Agua
+         * 5 -> Vitaminas
+         * 6 -> Fibra
+         * 7 -> Sales minerales
+         */
+        const dataset = [
+            { name: "Pan", list: [1], info: "Riquísimo con aceite y pimentón." },
+            { name: "Pan integral", list: [1, 6], info: "Estupendo para bocadillos." },
+            { name: "Lechuga", list: [5, 6], info: "En ensalada o en bocadillo." },
+            { name: "Huevo", list: [0, 4, 5], info: "Un alimento muy completo." },
+            { name: "Nueces", list: [4, 0, 6], info: "Un puñado sacia mucho." },
+            { name: "Fresas", list: [2, 5, 6], info: "Contienen muy pocos azúcares." },
+            { name: "Hummus de garbanzo", list: [[1, 0, 4, 6], [1, 0, 6, 4]], info: "Dipeando con zanahoria está buenísimo." },
+            { name: "Zumo de naranja", list: [2, 5], info: "Una pieza entera de fruta es mejor." },
+            { name: "Manzana", list: [2, 5, 6], info: "Deliciosamente crujiente." },
+            { name: "Patata asada", list: [1, 6], info: "Un manjar, bien aliñada con aceite de pimentón." },
+            { name: "Lentejas", list: [1, 0, 6], info: "Si las comes con arroz, obtienes todos los aminoácidos esenciales." },
+            { name: "Avellanas", list: [3, 0, 6], info: "Crujientes y deliciosas" },
+            { name: "Alubias", list: [1, 0, 6], info: "Muy versátiles. Para platos de cuchara y ensaladas" },
+            { name: "Judías verdes", list: [[5, 6, 7], [7,6,5], [7,5,6]], info: "Imprescindibles en el hervido" },
+            { name: "Aguacate", list: [[3, 5, 6], [3,6,5]], info: "Muy rico en lípidos saludables" },
+            { name: "Sandía", list: [2, 5, 6], info: "Muy hidratante y refrescante" },
+            { name: "Aceitunas", list: [3, 5, 6], info: "Los encurtidos son probióticoos" },
+            { name: "Aceite de coco", list: [3], info: "Desconocido para la mayoría de nosotros" },
+            { name: "Patatas fritas", list: [1, 2, 3], info: "Mejor no abusar de ellas" },
+            { name: "Plátano", list: [1, 2], info: "Muy rico en potasio" },
+            { name: "Pimiento rojo", list: [5, 6], info: "Contiene gran cantidad de vitamina C" },
+            { name: "Guisantes", list: [2, 0, 6], info: "Fantástico encebollado, y con arroz" },
+            { name: "Queso fresco", list: [0, 3, 5], info: "Óptimo para tomar en bocadillos y ensaladas" },
+            { name: "Queso curado", list: [3, 0, 5], info: "Muy calórico" },
+            { name: "Chocolate negro", list: [3, 2], info: "Cuanto más porcentaje de cacao, mejor" },
+            { name: "Alcachofas", list: [5, 6], info: "La reina de la parrillada de verduras" },
+            { name: "Chocolate blanco", list: [2, 3], info: "El chocolate blanco no existe" },
+            { name: "Espinacas", list: [5, 6], info: "Contiene oxalatos y ácido fólico" },
+            { name: "Aceite de oliva", list: [3], info: "Sabroso, de nuestra tierra" },
+            { name: "Aceite de girasol", list: [3], info: "Aceite con sabor suave" },
+            { name: "Melón", list: [2, 5, 6], info: "Hidratante y bajo en calorías" },
+            { name: "Bizcocho", list: [2, 3], info: "Mejor si es casero, hecho con poco azúcar" },
+            { name: "Galletas", list: [2, 3], info: "Conviene tomarlas solo esporádicamente" },
+            { name: "Rosquilletas de pipas", list: [2, 3], info: "No conviene abusar de ellas" }
+        ];
+
+        /* EL RESTO DEL DOCUMENTO NO SE DEBE EDITAR */
+
+    </script>
+
+
+    <style>
+        /* GENERAL */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            letter-spacing: 0.5pt;
+        }
+
+        a,
+        a:hover,
+        a:active {
+            color: black;
+            text-decoration: none;
+            ;
+        }
+
+        body {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            padding: 0 10vw;
+        }
+
+        /* MODAL */
+        .modal-container {
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            display: grid;
+            place-items: center;
+            background: #c8c8c880;
+            z-index: 99;
+        }
+
+        .modal {
+            min-width: 30vw;
+            max-width: 60vw;
+            border-radius: 5px;
+            background: white;
+            padding: 10px 20px;
+        }
+
+        .modal > div {
+            display: none;
+        }
+
+        /* scoreList */
+        .scoreList {
+            width: 50vw;
+            max-height: 80vh;
+            flex-direction: column;
+        }
+
+        .scoreList h2 {
+            text-align: center;
+            margin: 5px 0;
+        }
+
+        .scoreList section {
+            flex-grow: 1;
+            overflow-y: scroll;
+        }
+
+        .scoreList article {
+            display: grid;
+            grid-template-columns: 2fr 2fr 1fr;
+            margin: 2px;
+            border-bottom: 1px gray solid;
+        }
+
+        .scoreList article p:last-of-type {
+            margin-left: auto;
+            margin-right: 8px;
+        }
+
+        .scoreList div {
+            margin-left: auto;
+            margin-top: 8px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+
+        /* userInput */
+        .userInput {
+            flex-direction: row;
+        }
+
+        .userInput div {
+            margin: 5px 10px;
+            margin-right: 0;
+            padding: 5px 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .userInput div:first-of-type {
+            color: white;
+            background: rgb(68, 216, 68);
+        }
+
+        .userInput input {
+            display: inline-block;
+            padding: 2px 5px;
+        }
+
+        .userInput input[type="text"] {
+            flex-grow: 1;
+        }
+
+        .userInput input[type="number"] {
+            width: 60px;
+        }
+
+        /* guesses */
+        .correctGuess,
+        .wrongGuess h2 {
+            text-align: center;
+        }
+
+        .correctGuess h2 {
+            color: seagreen;
+        }
+
+        .wrongGuess h2 {
+            color: red;
+        }
+
+        .correctGuess p,
+        .wrongGuess p {
+            margin: 8px 0;
+            text-align: justify;
+        }
+
+        .correctGuess div,
+        .wrongGuess div {
+            width: fit-content;
+            margin-left: auto;
+            padding: 2px 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .correctGuess div {
+            border: seagreen 2px solid;
+        }
+
+        .wrongGuess div {
+            border: red 2px solid;
+        }
+
+        /* HEADER */
+        header {
+            height: 80px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        header div {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            z-index: 2;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        header h1 {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* MAIN */
+        main {
+            flex-grow: 1;
+            margin: 10px;
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            grid-template-rows: 4fr 4fr 2fr;
+            justify-content: space-between;
+        }
+
+        .cell {
+            margin: 20px;
+            position: relative;
+            color: black;
+            font-weight: 700;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .cell.active {
+            border: black 2px solid;
+        }
+
+        .cell > div {
+            visibility: hidden;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            font-size: 20px;
+            background: white;
+            color: black;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .cell.active > div {
+            visibility: visible;
+        }
+
+        /* BUTTONS */
+        .buttons {
+            grid-column: 1 / 5;
+            height: 100px;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .buttons div {
+            height: 40px;
+            padding: 5px 10px;
+            font-size: 18px;
+            border-radius: 10px;
+            color: white;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+        }
+
+        #delete {
+            background: red;
+        }
+
+        #continue {
+            background: green;
+        }
+
+        footer {
+            padding: 10px 0;
+            font-size: 18px;
+            text-align: center;
+        }
+
+        /* COLORS */
+        #pr {
+            background: blue;
+        }
+
+        .pr {
+            color: blue;
+        }
+
+        #gc, #li {
+            background: orange;
+        }
+
+        .gc, .li {
+            color: orange;
+        }
+
+        #gs {
+            background: red;
+        }
+
+        .gs {
+            color: red;
+        }
+
+        #vi, #fi {
+            background: #06d6a0;
+            /* TODO text shadow ? */
+        }
+
+        .vi,
+        .fi {
+            color: #06d6a0;
+        }
+
+        #ag {
+            background: lightblue;
+        }
+
+        .ag {
+            color: lightblue;
+        }
+
+        #sm {
+            background: lightcoral;
+        }
+
+        .sm {
+            color: lightcoral;
+        }
+
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1 id="title">Principales Nutrientes</h1>
+        <div>
+            <p id="user"></p>
+            <p id="score"><span></span>&nbsp;&nbsp;&nbsp;<span style="cursor: pointer;">Lista</span></p>
+        </div>
+    </header>
+    <section class="modal-container">
+        <article class="modal">
+            <div class="scoreList">
+                <h2>Puntuaciones</h2>
+                <section>
+                    <article></article>
+                </section>
+                <div>Cerrar</div>
+            </div>
+            <div class="userInput">
+                <input type="text" placeholder="Nombre" autofocus />
+                <input type="number" min="1" value="5" id="maxGuesses" />
+                <div>Jugar</div>
+                <div>Lista</div>
+            </div>
+            <div class="correctGuess">
+                <h2>Perfecto</h2>
+                <p></p>
+                <p></p>
+                <p></p>
+                <div>Continuar</div>
+            </div>
+            <div class="wrongGuess">
+                <h2>Error</h2>
+                <p></p>
+                <p></p>
+                <p></p>
+                <div>Cerrar</div>
+            </div>
+        </article>
+    </section>
+    <main>
+        <section class="cell" id="pr">
+            Proteínas
+            <div></div>
+        </section>
+        <section class="cell" id="gc">
+            Glúcidos <br /> Complejos
+            <div></div>
+        </section>
+        <section class="cell" id="gs">
+            Glúcidos <br /> Simples
+            <div></div>
+        </section>
+        <section class="cell" id="ag">
+            Agua
+            <div></div>
+        </section>
+        <section class="cell" id="li">
+            Lípidos
+            <div></div>
+        </section>
+        <section class="cell" id="vi">
+            Vitaminas
+            <div></div>
+        </section>
+        <section class="cell" id="fi">
+            Fibra
+            <div></div>
+        </section>
+        <section class="cell" id="sm">
+            Sales Minerales
+            <div></div>
+        </section>
+        <div class="buttons">
+            <div id="delete">Borrar</div>
+            <div id="continue">Continuar</div>
+        </div>
+    </main>
+    <footer>Joan Oltra Blasco GNU GPL 2021. Instagram: <a href="https://instagram.com/ob.joan"
+            target="_blank">@ob.joan</a></footer>
+    <script>
+
+        // TODO PUNTUACIONES
+
+        // Game variables
+        var user = "";
+        var maxGuesses = 0;
+        var score = 0;
+        var selected = [];
+        var item = {};
+        var used = [];
+
+        if (window.localStorage.getItem("scoreList") == undefined) {
+            window.localStorage.setItem("scoreList", JSON.stringify([]));
+        }
+
+        // User input is displayed trough JS to avoid css conflicts
+        document.getElementsByClassName("userInput")[0].style.display = "flex";
+
+        // User input event listener to start game
+        document.getElementsByClassName("userInput")[0].getElementsByTagName("div")[0].onclick = () => {
+            maxGuesses = document.getElementById("maxGuesses").value;
+            let name = document.getElementsByClassName("userInput")[0].getElementsByTagName("input")[0].value
+            if (name == "") {
+                alert("Escribe un nombre");
+                return;
+            }
+            // START GAME
+            user = name;
+            document.getElementById("user").innerText = name;
+            document.getElementById("score").children[0].innerText = score;
+            newGuess();
+            document.getElementsByClassName("userInput")[0].style.display = "none";
+            document.getElementsByClassName("modal-container")[0].style.display = "none";
+        };
+
+        // Elements
+        var pr = document.getElementById("pr");
+        var gc = document.getElementById("gc");
+        var gs = document.getElementById("gs");
+        var ag = document.getElementById("ag");
+        var li = document.getElementById("li");
+        var vi = document.getElementById("vi");
+        var fi = document.getElementById("fi");
+        var sm = document.getElementById("sm");
+        var continueButton = document.getElementById("continue");
+        var deleteButton = document.getElementById("delete");
+
+        // FUNCTIONS
+
+        /**
+         * Checks if item has multiple options and checks one of them is correct.
+         * 
+         * Returns boolean
+        */ 
+        const isGuessingCorrect = () => {
+            if (item.list[0][0] === undefined) {
+                // One option 
+                if (selected.length !== item.list.length) return false
+                for (let i = 0; i < selected.length; i++) {
+                    if (selected[i] != item.list[i]) return false
+                }
+                return true
+            } else {
+                // Multiple options
+                for (let i = 0; i < item.list.length; i++) {
+                    if (item.list[i].length !== selected.length) continue;
+                    for (let k = 0; k < item.list[i].length; k++) {
+                        if (item.list[i][k] !== selected[k]) continue
+                    }
+                    return true
+                }
+                return false
+            }
+        }
+
+        /**
+         * The nutrient is added to the selected list and
+         * displays order of nutrient in list 
+        */
+        let cellClicked = (ev) => {
+            if (ev.target.className == "cell active") return;
+            ev.target.className = "cell active";
+            selected.push(nutrients[ev.target.id]);
+            ev.target.getElementsByTagName("div")[0].innerText = selected.length;
+        }
+
+        /**
+         * Resets every cell to non active and empty order
+        */
+        let clearCells = () => {
+            pr.className = "cell";
+            pr.getElementsByTagName("div")[0].innerText = "";
+            gc.className = "cell";
+            gc.getElementsByTagName("div")[0].innerText = "";
+            gs.className = "cell";
+            gs.getElementsByTagName("div")[0].innerText = "";
+            ag.className = "cell";
+            ag.getElementsByTagName("div")[0].innerText = "";
+            li.className = "cell";
+            li.getElementsByTagName("div")[0].innerText = "";
+            vi.className = "cell";
+            vi.getElementsByTagName("div")[0].innerText = "";
+            fi.className = "cell";
+            fi.getElementsByTagName("div")[0].innerText = "";
+            sm.className = "cell";
+            sm.getElementsByTagName("div")[0].innerText = "";
+        }
+
+        /**
+         * Creates a new nutrient to guess. Checks it's not been used before
+        */
+        let newGuess = () => {
+            let randomInt, notUsed = true;
+            do {
+                randomInt = Math.floor(Math.random() * dataset.length);
+                for (let i = 0; i < used.length; i++) {
+                    if (used[i] == randomInt) {
+                        notUsed = false;
+                        break;
+                    }
+                }
+            } while (!notUsed);
+            item = dataset[randomInt];
+            document.getElementById("title").innerText = item.name;
+        }
+
+        /**
+         * Populates success/error modal text. 
+         * Returns string
+        */
+        let modalText = () => {
+            let text = item.name + ": ";
+            for (let i = 0; i < item.list.length - 1; i++) {
+                text += modalHtml[item.list[i]] + ", ";
+            }
+            text += modalHtml[item.list[item.list.length - 1]] + ".";
+            return text;
+        }
+
+        /**
+         * Adds element to local storage store list
+        */
+        let updateScoreList = () => {
+            let scoreList = JSON.parse(localStorage.getItem("scoreList"));
+            scoreList.push({ user, score, date: new Date().getTime() });
+            localStorage.setItem("scoreList", JSON.stringify(scoreList));
+        }
+
+        /**
+         * Populates and shows score list. Handles its own click event listeners
+        */
+        let showScoreList = () => {
+            if (user == "") {
+                document.getElementsByClassName("userInput")[0].style.display = "none";
+            }
+            // Get scores
+            let scoreList = JSON.parse(window.localStorage.getItem("scoreList"));
+            let html = "";
+            for (let i = 0; i < scoreList.length; i++) {
+                const score = scoreList[i];
+                const date = new Date(score.date);
+                html += "<article><p>" + score.user + "</p><p>" + date.toLocaleString() + "</p><p>" + score.score + "</p></article>"
+            }
+            document.getElementsByClassName("scoreList")[0].getElementsByTagName("section")[0].innerHTML = html;
+            // Show modal
+            document.getElementsByClassName("scoreList")[0].style.display = "flex";
+            document.getElementsByClassName("modal-container")[0].style.display = "grid";
+            // Close modal listener
+            document.getElementsByClassName("scoreList")[0].getElementsByTagName("div")[0].onclick = () => {
+                document.getElementsByClassName("scoreList")[0].style.display = "none";
+                if (user == "") {
+                    // Show first modal
+                    document.getElementsByClassName("userInput")[0].style.display = "flex";
+                } else {
+                    document.getElementsByClassName("modal-container")[0].style.display = "none";
+                }
+            }
+        };
+
+        // EVENT LISTENERS
+
+        // Cell event listeners
+        pr.onclick = cellClicked;
+        gc.onclick = cellClicked;
+        gs.onclick = cellClicked;
+        ag.onclick = cellClicked;
+        li.onclick = cellClicked;
+        vi.onclick = cellClicked;
+        fi.onclick = cellClicked;
+        sm.onclick = cellClicked;
+
+        // Show score list event listeners
+        document.getElementById("score").children[1].onclick = showScoreList;
+        document.getElementsByClassName("userInput")[0].getElementsByTagName("div")[1].onclick = showScoreList;
+
+        // Delete and continue event listeners
+
+        deleteButton.onclick = () => {
+            selected = [];
+            clearCells();
+        }
+
+        continueButton.onclick = () => {
+            if (selected.length == 0) {
+                alert("Selecciona al menos una opción")
+                return
+            }
+            // Check if guessing is correct
+            
+            let isCorrect = isGuessingCorrect();
+            selected = [];
+            if (isCorrect) {
+                score++; 
+                document.getElementById("score").children[0].innerText = score;
+                // MODAL CORRECT
+                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText();
+                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[1].innerText = item.info;
+                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[2].innerText = "Tu puntuación es " + score + ".";
+                document.getElementsByClassName("correctGuess")[0].style.display = "block";
+                document.getElementsByClassName("modal-container")[0].style.display = "grid";
+                clearCells();
+                // Modal close event creates checks if game is over and creates new guess
+                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("div")[0].onclick = () => {
+                    if (score == maxGuesses) {
+                        updateScoreList();
+                        gameCompleted();
+                        return;
+                    }
+                    newGuess()
+                    document.getElementsByClassName("correctGuess")[0].style.display = "none";
+                    document.getElementsByClassName("modal-container")[0].style.display = "none";
+                }
+            } else {
+                // MODAL NOT CORRECT
+                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText();
+                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[1].innerText = item.info;
+                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[2].innerText = "Tu puntuación es " + score + ".";
+                document.getElementsByClassName("wrongGuess")[0].style.display = "block";
+                document.getElementsByClassName("modal-container")[0].style.display = "grid";
+                // Save score in localStorage
+                updateScoreList();
+                // Modal close event triggers reload
+                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("div")[0].onclick = () => {
+                    window.location.href = "";
+                }
+            }
+        }
+
+        /**
+         * Populate modal and refresh on modal close
+        */
+        let gameCompleted = () => {
+            document.getElementsByClassName("correctGuess")[0].getElementsByTagName("h2")[0].innerText = "¡Victoria!"
+            document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[0].innerText = "Has llegado al límite de puntuación.";
+            document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[1].innerText = "Tu puntuación ha sido de " + score + ".";
+            document.getElementsByClassName("correctGuess")[0].getElementsByTagName("div")[0].onclick = () => {
+                window.location.href = "";
+            }
+        }
+
+        var modalHtml = [
+            "<span class=\"pr\">proteínas</span>",
+            "<span class=\"gc\">glúcidos complejos</span>",
+            "<span class=\"gs\">glúcidos simples</span>",
+            "<span class=\"ag\">agua</span>",
+            "<span class=\"li\">lípidos</span>",
+            "<span class=\"vi\">vitaminas</span>",
+            "<span class=\"fi\">fibra</span>",
+            "<span class=\"sm\">sales minerales</span>",
+        ];
+        var nutrients = { pr: 0, gc: 1, gs: 2, li: 3, vi: 4, fi: 5 };
+        /* var nutrList = ["Proteínas", "G. Complejos", "G. Simples", "Lípidos", "Vitaminas", "Fibra"]; */
+
+        document.getElementById("maxGuesses").max = dataset.length;
+    </script>
+</body>
+
+</html>
