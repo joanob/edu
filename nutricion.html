@@ -496,8 +496,6 @@
             target="_blank">@ob.joan</a></footer>
     <script>
 
-        // TODO PUNTUACIONES
-
         // Game variables
         var user = "";
         var maxGuesses = 0;
@@ -558,7 +556,6 @@
                 }
                 return true
             } else {
-                // TODO NO ES CORRECTE AMB VARIES OPCIONS
                 // Multiple options
                 for (let i = 0; i < item.list.length; i++) {
                     if (item.list[i].length !== selected.length) continue;
@@ -614,8 +611,8 @@
          * Creates a new nutrient to guess. Checks it's not been used before
         */
         let newGuess = () => {
-            let randomInt = 6, notUsed = true;
-            /* do {
+            let randomInt, notUsed = true;
+            do {
                 randomInt = Math.floor(Math.random() * dataset.length);
                 for (let i = 0; i < used.length; i++) {
                     if (used[i] == randomInt) {
@@ -623,7 +620,7 @@
                         break;
                     }
                 }
-            } while (!notUsed); */
+            } while (!notUsed);
             item = dataset[randomInt];
             document.getElementById("title").innerText = item.name;
         }
