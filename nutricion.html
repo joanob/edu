@@ -8,14 +8,29 @@
     <title>Principales nutrientes</title>
 
     <script>
+        /** CÓMO JUGAR 
+         * 
+         * Descargar el archivo .html y abrir con Chrome, Firefox o cualquier otro navegador.
+         * 
+         * El jugador introduce su nombre y el máximo de rondas de juego. Este máximo existe para limitar el tiempo de juego de cada alumno.
+         * 
+         * El juego consiste en seleccionar los principales nutrientes del alimento indicado por orden de abundancia. Si se ha equivocado puede borrar la selección. Los alimentos se eligen aleatoriamente.
+         * 
+         * El juego termina cuando el jugador comete un error o alcanza el límite de puntuación. La puntuación obtenida se guarda en la lista de puntuación. Esta lista se guarda, como una cookie, en el ordenador que se utilice para jugar y no se comparte a terceros.
+         * 
+         * La lista de alimentos es editable, se pueden añadir y modificar alimentos. Para editar es necesario abrir con bloc de notas. Las instrucciones para editar la lista de alimentos están a continuación.
+         * 
+         * Para notificar errores o sugerir mejoras u otros juegos me podéis contactar por Instagram @ob.joan 
+         * 
+        */
+
         /** EDITAR LISTA DE ALIMENTOS. 
          *
          * Click derecho, abrir con bloc de notas (no sirve Word o similares) y bajar hasta encontrar el dataset.
          *
          * Para añadir nuevos alimentos al dataset escribir una coma al final del elemento anterior y en una nueva línea copiar {name: "", list: [], info: ""}. 
          * 
-         * Rellenar los datos separando los valores numéricos de la lista de nutrientes nutrientes con comas. Los nutrientes deben estar ordenados por abundancia. 
-         * Si hay varias combinaciones posibles se anidan como en el siguiente ejemplo [[1, 2], [2, 1]].
+         * Rellenar los datos separando los valores numéricos de la lista de nutrientes nutrientes con comas. Los nutrientes deben estar ordenados por abundancia. Si hay varias combinaciones posibles se anidan como en el siguiente ejemplo [[1, 2], [2, 1]].
          * 
          * El último elemento de la lista no debe llevar coma al final. 
         */
@@ -33,39 +48,39 @@
          */
         const dataset = [
             { name: "Pan", list: [1], info: "Riquísimo con aceite y pimentón." },
-            { name: "Pan integral", list: [1, 6], info: "Estupendo para bocadillos." },
-            { name: "Lechuga", list: [5, 6], info: "En ensalada o en bocadillo." },
-            { name: "Huevo", list: [0, 4, 5], info: "Un alimento muy completo." },
-            { name: "Nueces", list: [4, 0, 6], info: "Un puñado sacia mucho." },
-            { name: "Fresas", list: [2, 5, 6], info: "Contienen muy pocos azúcares." },
-            { name: "Hummus de garbanzo", list: [[1, 0, 4, 6], [1, 0, 6, 4]], info: "Dipeando con zanahoria está buenísimo." },
-            { name: "Zumo de naranja", list: [2, 5], info: "Una pieza entera de fruta es mejor." },
-            { name: "Manzana", list: [2, 5, 6], info: "Deliciosamente crujiente." },
+            { name: "Pan integral", list: [[1, 6]], info: "Estupendo para bocadillos." },
+            { name: "Lechuga", list: [[4, 5, 6, 7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "En ensalada o en bocadillo." },
+            { name: "Huevo", list: [[0, 3, 5],[5,3,0],[0,5,3], [ 3, 5,0],[5,0,3],[3,0,5]], info: "Un alimento muy completo." },
+            { name: "Nueces", list: [[3, 0, 6],[3,6,0]], info: "Un puñado sacia mucho." },
+            { name: "Fresas", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Contienen muy pocos azúcares, que son de liberación lenta." },
+            { name: "Hummus de garbanzo", list: [[1, 0, 3], [1, 3, 0]], info: "Dipeando con zanahoria está buenísimo." },
+            { name: "Zumo de naranja", list: [[2, 5,4],[2,4,5 ]], info: "Una pieza entera de fruta es mejor." },
+            { name: "Manzana", list: [[4, 5, 6],[4, 6, 5],[5, 6, 4],[5, 4, 6],[6,5,4] ,[6,4,5]], info: "Deliciosamente crujiente. Los azúcares que contiene son de liberación lenta" },
             { name: "Patata asada", list: [1, 6], info: "Un manjar, bien aliñada con aceite de pimentón." },
             { name: "Lentejas", list: [1, 0, 6], info: "Si las comes con arroz, obtienes todos los aminoácidos esenciales." },
-            { name: "Avellanas", list: [3, 0, 6], info: "Crujientes y deliciosas" },
+            { name: "Avellanas", list: [[3, 0, 6],[3,6,0]], info: "Crujientes y deliciosas" },
             { name: "Alubias", list: [1, 0, 6], info: "Muy versátiles. Para platos de cuchara y ensaladas" },
-            { name: "Judías verdes", list: [[5, 6, 7], [7,6,5], [7,5,6]], info: "Imprescindibles en el hervido" },
+            { name: "Judías verdes", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Imprescindibles en el hervido" },
             { name: "Aguacate", list: [[3, 5, 6], [3,6,5]], info: "Muy rico en lípidos saludables" },
-            { name: "Sandía", list: [2, 5, 6], info: "Muy hidratante y refrescante" },
+            { name: "Sandía", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Muy hidratante y refrescante. Los azúcares que contiene son de liberación lenta" },
             { name: "Aceitunas", list: [3, 5, 6], info: "Los encurtidos son probióticoos" },
             { name: "Aceite de coco", list: [3], info: "Desconocido para la mayoría de nosotros" },
-            { name: "Patatas fritas", list: [1, 2, 3], info: "Mejor no abusar de ellas" },
-            { name: "Plátano", list: [1, 2], info: "Muy rico en potasio" },
-            { name: "Pimiento rojo", list: [5, 6], info: "Contiene gran cantidad de vitamina C" },
-            { name: "Guisantes", list: [2, 0, 6], info: "Fantástico encebollado, y con arroz" },
-            { name: "Queso fresco", list: [0, 3, 5], info: "Óptimo para tomar en bocadillos y ensaladas" },
-            { name: "Queso curado", list: [3, 0, 5], info: "Muy calórico" },
+            { name: "Patatas fritas", list: [[1, 2, 3][1,3,2]], info: "Mejor no abusar de ellas" },
+            { name: "Plátano", list: [1, 2], info: "Muy rico en potasio. Los azúcares que contiene son de liberación lenta" },
+            { name: "Pimiento rojo", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Contiene gran cantidad de vitamina C" },
+            { name: "Guisantes", list: [1, 0, 6], info: "Fantástico encebollado, y con arroz" },
+            { name: "Queso fresco", list: [[0, 3, 5,7],[0, 3, 7,5],[0, 3, 5,7]], info: "Óptimo para tomar en bocadillos y ensaladas" },
+            { name: "Queso curado", list: [[3, 0, 5, 7],[3, 0, 7, 5]], info: "Muy calórico" },
             { name: "Chocolate negro", list: [3, 2], info: "Cuanto más porcentaje de cacao, mejor" },
-            { name: "Alcachofas", list: [5, 6], info: "La reina de la parrillada de verduras" },
-            { name: "Chocolate blanco", list: [2, 3], info: "El chocolate blanco no existe" },
-            { name: "Espinacas", list: [5, 6], info: "Contiene oxalatos y ácido fólico" },
+            { name: "Alcachofas", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "La reina de la parrillada de verduras" },
+            { name: "Chocolate blanco", list: [[2,3], [3,2]], info: "El chocolate blanco no existe" },
+            { name: "Espinacas", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Contiene oxalatos y ácido fólico" },
             { name: "Aceite de oliva", list: [3], info: "Sabroso, de nuestra tierra" },
             { name: "Aceite de girasol", list: [3], info: "Aceite con sabor suave" },
-            { name: "Melón", list: [2, 5, 6], info: "Hidratante y bajo en calorías" },
-            { name: "Bizcocho", list: [2, 3], info: "Mejor si es casero, hecho con poco azúcar" },
-            { name: "Galletas", list: [2, 3], info: "Conviene tomarlas solo esporádicamente" },
-            { name: "Rosquilletas de pipas", list: [2, 3], info: "No conviene abusar de ellas" }
+            { name: "Melón", list: [[4, 5, 6,7],[4, 6, 5,7],[5, 6, 4,7],[5, 4, 6,7],[6,5,4,7] [6,4,5,7]], info: "Hidratante y bajo en calorías. Los azúcares que contiene son de liberación lenta" },
+            { name: "Bizcocho", list: [[2,1 ,3], [2,3,1],[3,2,1], [1,2,3]], info: "Mejor si es casero, hecho con poco azúcar" },
+            { name: "Galletas", list: [[2,1 ,3], [2,3,1],[3,2,1], [1,2,3]], info: "Conviene tomarlas solo esporádicamente" },
+            { name: "Rosquilletas de pipas", list: [[2,1 ,3], [2,3,1],[3,2,1], [1,2,3]], info: "No conviene abusar de ellas" }
         ];
 
         /* EL RESTO DEL DOCUMENTO NO SE DEBE EDITAR */
@@ -543,13 +558,20 @@
                 }
                 return true
             } else {
+                // TODO NO ES CORRECTE AMB VARIES OPCIONS
                 // Multiple options
                 for (let i = 0; i < item.list.length; i++) {
                     if (item.list[i].length !== selected.length) continue;
-                    for (let k = 0; k < item.list[i].length; k++) {
-                        if (item.list[i][k] !== selected[k]) continue
+                    let error = false;
+                    for (let j = 0; j < item.list[i].length; j++) {
+                        if (item.list[i][j] !== selected[j]) {
+                            error = true;
+                            break
+                        }
                     }
-                    return true
+                    if (!error) {
+                        return true
+                    }
                 }
                 return false
             }
@@ -592,8 +614,8 @@
          * Creates a new nutrient to guess. Checks it's not been used before
         */
         let newGuess = () => {
-            let randomInt, notUsed = true;
-            do {
+            let randomInt = 6, notUsed = true;
+            /* do {
                 randomInt = Math.floor(Math.random() * dataset.length);
                 for (let i = 0; i < used.length; i++) {
                     if (used[i] == randomInt) {
@@ -601,21 +623,32 @@
                         break;
                     }
                 }
-            } while (!notUsed);
+            } while (!notUsed); */
             item = dataset[randomInt];
             document.getElementById("title").innerText = item.name;
         }
 
         /**
          * Populates success/error modal text. 
+         * Uses selected answer if is correct and first option if is not correct
          * Returns string
         */
-        let modalText = () => {
+        let modalText = (isCorrect) => {
             let text = item.name + ": ";
-            for (let i = 0; i < item.list.length - 1; i++) {
-                text += modalHtml[item.list[i]] + ", ";
+            let list;
+            if (isCorrect) {
+                list = selected
+            } else {
+                if (item.list[0][0] === undefined) {
+                    list = item.list;
+                } else {
+                    list = item.list[0];
+                }
             }
-            text += modalHtml[item.list[item.list.length - 1]] + ".";
+            for (let i = 0; i < list.length - 1; i++) {
+                text += modalHtml[list[i]] + ", ";
+            }
+            text += modalHtml[list[list.length - 1]] + ".";
             return text;
         }
 
@@ -690,17 +723,17 @@
             // Check if guessing is correct
             
             let isCorrect = isGuessingCorrect();
-            selected = [];
             if (isCorrect) {
                 score++; 
                 document.getElementById("score").children[0].innerText = score;
                 // MODAL CORRECT
-                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText();
+                document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText(true);
                 document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[1].innerText = item.info;
                 document.getElementsByClassName("correctGuess")[0].getElementsByTagName("p")[2].innerText = "Tu puntuación es " + score + ".";
                 document.getElementsByClassName("correctGuess")[0].style.display = "block";
                 document.getElementsByClassName("modal-container")[0].style.display = "grid";
                 clearCells();
+                selected = [];
                 // Modal close event creates checks if game is over and creates new guess
                 document.getElementsByClassName("correctGuess")[0].getElementsByTagName("div")[0].onclick = () => {
                     if (score == maxGuesses) {
@@ -714,7 +747,7 @@
                 }
             } else {
                 // MODAL NOT CORRECT
-                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText();
+                document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[0].innerHTML = modalText(false);
                 document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[1].innerText = item.info;
                 document.getElementsByClassName("wrongGuess")[0].getElementsByTagName("p")[2].innerText = "Tu puntuación es " + score + ".";
                 document.getElementsByClassName("wrongGuess")[0].style.display = "block";
@@ -750,8 +783,7 @@
             "<span class=\"fi\">fibra</span>",
             "<span class=\"sm\">sales minerales</span>",
         ];
-        var nutrients = { pr: 0, gc: 1, gs: 2, li: 3, vi: 4, fi: 5 };
-        /* var nutrList = ["Proteínas", "G. Complejos", "G. Simples", "Lípidos", "Vitaminas", "Fibra"]; */
+        var nutrients = { pr: 0, gc: 1, gs: 2, ag: 3, li: 4, vi: 5, fi: 6, sm: 7 };
 
         document.getElementById("maxGuesses").max = dataset.length;
     </script>
