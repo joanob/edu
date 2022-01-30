@@ -630,9 +630,10 @@
          * Creates a new nutrient to guess. Checks it's not been used before
         */
         let newGuess = () => {
-            let randomInt, notUsed = true;
+            let randomInt, notUsed;
             do {
                 randomInt = Math.floor(Math.random() * dataset.length);
+                notUsed = true;
                 for (let i = 0; i < used.length; i++) {
                     if (used[i] == randomInt) {
                         notUsed = false;
